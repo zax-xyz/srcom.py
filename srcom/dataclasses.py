@@ -39,7 +39,7 @@ class Category(Resource):
     async def runs(self):
         """Gets all runs in the category"""
         runs = await utils.get_link(self, 'runs')
-        return [Run(run, self._http) for run in runs['data']]
+        return (Run(run, self._http) for run in runs['data'])
 
     async def leaderboard(self, top=None):
         """Gets the leaderboard (all verified current PBs) in this category
@@ -52,7 +52,7 @@ class Category(Resource):
 
         board = await utils.get_link(self, 'leaderboard', params)
 
-        return [Run(r['run'], self._http) for r in board['data']['runs']]
+        return (Run(r['run'], self._http) for r in board['data']['runs'])
 
 
 class Game(Resource):
@@ -77,7 +77,7 @@ class Game(Resource):
     async def runs(self):
         """Gets all the runs for the current game"""
         runs = await utils.get_link(self, 'runs')
-        return [Run(run, self._http) for run in runs['data']]
+        return (Run(run, self._http) for run in runs['data'])
 
     async def levels(self):
         """Gets all the levels for the current game"""
@@ -86,7 +86,7 @@ class Game(Resource):
     async def categories(self):
         """Gets all the categories for the current game"""
         categories = await utils.get_link(self, 'categories')
-        return [Category(c, self._http) for c in categories['data']]
+        return (Category(c, self._http) for c in categories['data'])
 
     async def variables(self):
         """Gets all the variables for the current game"""
@@ -109,7 +109,7 @@ class Game(Resource):
         category
         """
         records = await self.leaderboard(1, category)
-        return records[0]
+        return next(records)
 
     async def series(self):
         """Gets the series this game belongs to"""
@@ -119,12 +119,12 @@ class Game(Resource):
     async def derived_games(self):
         """Gets a list of games derived from this one"""
         resp = await utils.get_link(self, 'derived-games')
-        return [Game(g, self._http) for g in resp['data']]
+        return (Game(g, self._http) for g in resp['data'])
 
     async def romhacks(self):
         """Gets a list of romhack games based on this one"""
         resp = await utils.get_link(self, 'romhacks')
-        return [Game(g, self._http) for g in resp['data']]
+        return (Game(g, self._http) for g in resp['data'])
 
     async def leaderboard(self, top=None, category=None):
         """Gets the leaderboard (all verified current PBs) in this game for a
@@ -145,7 +145,7 @@ class Game(Resource):
                 f'leaderboards/{self.id}/category/{category}', params
             )
 
-        return [Run(run['run'], self._http) for run in board['data']['runs']]
+        return (Run(run['run'], self._http) for run in board['data']['runs'])
 
 
 class Run(Resource):
@@ -179,12 +179,12 @@ class Run(Resource):
 
         For most runs this will only be one, however in some (co-op), there may
         be more than one runner"""
-        return [
+        return (
             User(
                 (await self._http._get(player['uri']))['data'],
                 self._http
             ) for player in self._players
-        ]
+        )
 
     async def player(self):
         """Gets the runner (player) who performed this run
@@ -242,11 +242,11 @@ class Series(Resource):
     async def games(self):
         """Gets the games in this series"""
         resp = await utils.get_link(self, 'game')
-        return [Game(g, self._http) for g in resp['data']]
+        return (Game(g, self._http) for g in resp['data'])
 
     async def moderators(self):
         """Gets the leaderboard moderators for this series"""
-        return [await User.from_id(id, self._http) for id in self._moderators]
+        return (await User.from_id(id, self._http) for id in self._moderators)
 
 
 class User(Resource):
@@ -279,14 +279,14 @@ class User(Resource):
     async def runs(self):
         """Gets up to the last 20 runs submitted by the user"""
         runs = await utils.get_data(self, 'runs')
-        return [Run(r, self._http) for r in runs]
+        return (Run(r, self._http) for r in runs)
 
     async def games(self):
         """Gets up to 20 games that the user has ran"""
         games = await utils.get_data(self, 'games')
-        return [Game(g, self._http) for g in games]
+        return (Game(g, self._http) for g in games)
 
     async def personal_bests(self):
         """Gets up to 20 personal bests from the user"""
         runs = await utils.get_data(self, 'personal-bests')
-        return [Run(r['runs'], self._http, r['place']) for r in runs]
+        return (Run(r['runs'], self._http, r['place']) for r in runs)
