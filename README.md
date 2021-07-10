@@ -14,12 +14,15 @@ import srcom
 
 async def main():
     client = srcom.Client()
+
+    # Exact match by abbreviation
     game = await client.get_game(abbreviation="khfm")
+
     await client.close()
 
     # You can also use a context manager for automatically closing the client
     async with srcom.Client() as client:
-        # Searches for game by name
+        # Fuzzy search game by name
         game = await client.get_game(name="Kingdom Hearts II")
 
         # Gets the 3 fastest runs for the default category
