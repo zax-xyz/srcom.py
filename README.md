@@ -2,7 +2,7 @@
 
 **This project is a work in progress.**
 
-An asynchronous Python wrapper for the speedrun.com REST API. Currently it focuses on the most important parts of the API. I.e., games, runs, users. It follows an object-oriented design, with methods integrating different parts of the API together and allowing simple retrieval of information.
+An asynchronous Python wrapper for the speedrun.com REST API. Currently it focuses on the most important parts of the API, i.e., games, runs, users. It follows an object-oriented design, with methods integrating different parts of the API together and allowing simple retrieval of information.
 
 ## Simple Example
 
