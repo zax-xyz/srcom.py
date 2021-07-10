@@ -159,6 +159,7 @@ class Run(Resource):
         self._game = data['game']
         self._category = data['category']
         self.place = place
+        self.status = data['status']['status']
         self.comment = data['comment']
 
         self.date = data['date']

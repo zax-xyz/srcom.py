@@ -24,6 +24,7 @@ async def main():
         assert game == game_by_id
 
         for run in await game.leaderboard(3):
+            assert run.status == "verified"
             await print_run(run)
 
         print()
