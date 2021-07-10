@@ -32,6 +32,7 @@ async def main():
 
         print()
 
+        # Returns at most 20 runs (default limit in API)
         for run in await game.runs():
             await print_run(run)
 
