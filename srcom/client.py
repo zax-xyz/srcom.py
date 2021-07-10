@@ -1,9 +1,5 @@
 from .http import HTTPClient
-from .category import Category
-from .game import Game
-from .run import Run
-from .series import Series
-from .user import User
+from .dataclasses import Category, Game, Run, Series, User
 
 
 class Client:

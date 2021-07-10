@@ -15,3 +15,4 @@ class Resource:
     async def from_id(cls, id, http):
         resp = await http.get(f'{cls.endpoint}/{id}')
         return cls(resp['data'], http)
+
