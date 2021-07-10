@@ -18,9 +18,10 @@ async def main():
     # Exact match by abbreviation
     game = await client.get_game(abbreviation="khfm")
 
+    # Make sure to close the HTTP session!
     await client.close()
 
-    # You can also use a context manager for automatically closing the client
+    # You can also use a context manager to automatically close the client
     async with srcom.Client() as client:
         # Fuzzy search game by name
         game = await client.get_game(name="Kingdom Hearts II")
