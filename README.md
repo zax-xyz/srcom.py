@@ -13,7 +13,11 @@ import srcom
 
 
 async def main():
-    # Context handler automatically calls client.close() upon exit
+    client = srcom.Client()
+    game = await client.get_game(abbreviation="khfm")
+    await client.close()
+
+    # You can also use a context manager for automatically closing the client
     async with srcom.Client() as client:
         # Searches for game by name
         game = await client.get_game(name="Kingdom Hearts II")
