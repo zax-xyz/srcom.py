@@ -174,6 +174,10 @@ class Run(Resource):
         self.splits = utils.safeget(data, ('splits', 'uri'))
 
     async def players(self):
+        """Gets the list of runners (players) who performed this run
+
+        For most runs this will only be one, however in some (co-op), there may
+        be more than one runner"""
         return [
             User(
                 (await self._http._get(player['uri']))['data'],
@@ -182,26 +186,41 @@ class Run(Resource):
         ]
 
     async def player(self):
+        """Gets the runner (player) who performed this run
+
+        If there was more than one runner involved in the run, this will only
+        return the first one in the list given by the API"""
         return User(
             (await self._http._get(self._players[0]['uri']))['data'],
             self._http
         )
 
     async def game(self):
+        """Gets the game that this run was performed for"""
         resp = await self._http.get(f'games/{self._game}')
         return Game(resp['data'], self._http)
 
     async def category(self):
+        """Gets the leaderboard category that this run was performed under"""
         resp = await self._http.get(f'categories/{self._category}')
         return Category(resp['data'], self._http)
 
     async def platform(self):
+        """Gets the platform that this run was performed on
+
+        Can be None if not set"""
         return await utils.get_link(self, 'platform')
 
     async def region(self):
+        """Gets the region of the system that the run was performed on
+
+        Can be None"""
         return await utils.get_link(self, 'region')
 
     async def examiner(self):
+        """Gets the examiner of this run
+
+        The examiner is the user who verified or rejected the run"""
         user = await utils.get_link(self, 'examiner')
         return User(user['data'], self._http)
 
@@ -257,13 +276,16 @@ class User(Resource):
         self.srl = utils.safeget(data, ('speedrunslive', 'uri'))
 
     async def runs(self):
+        """Gets up to the last 20 runs submitted by the user"""
         runs = await utils.get_data(self, 'runs')
         return [Run(r, self._http) for r in runs]
 
     async def games(self):
+        """Gets up to 20 games that the user has ran"""
         games = await utils.get_data(self, 'games')
         return [Game(g, self._http) for g in games]
 
     async def personal_bests(self):
+        """Gets up to 20 personal bests from the user"""
         runs = await utils.get_data(self, 'personal-bests')
         return [Run(r['runs'], self._http, r['place']) for r in runs]
