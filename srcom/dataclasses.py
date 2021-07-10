@@ -86,7 +86,7 @@ class Game(Resource):
     async def categories(self):
         """Gets all the categories for the current game"""
         categories = await utils.get_link(self, 'categories')
-        return [Category(c, self._http) for c in categories]
+        return [Category(c, self._http) for c in categories['data']]
 
     async def variables(self):
         """Gets all the variables for the current game"""
