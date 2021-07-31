@@ -118,7 +118,20 @@ class Game(Resource):
         If category is not specified, then uses the leaderboard's default
         category. Can be None if no record was found.
         """
-        records = await self.leaderboard(1, category)
+        if category is None:
+            category = self.default_category
+
+        # Get 'subcategories', the API default only sets the category, not the
+        # subcategories defined by variables.
+        variables = await self.variables()
+        subcategories = [
+            var
+            for var in variables
+            if var.is_subcategory and var._category == category
+        ]
+        params = {f"var-{var.id}": var.default for var in subcategories}
+
+        records = await self.leaderboard(1, category, params)
         try:
             return next(records)
         except StopIteration:
