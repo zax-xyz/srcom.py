@@ -137,17 +137,18 @@ class Game(Resource):
         resp = await utils.get_link(self, "romhacks")
         return (Game(g, self._http) for g in resp["data"])
 
-    async def leaderboard(self, top=None, category=None):
+    async def leaderboard(self, top=None, category=None, params=None):
         """Gets the leaderboard (all verified current PBs) in this game for a
         particular leaderboard
 
         If top is not specified, gets all runs in the leaderboard. If category
         is not specified, then uses the leaderboard's default category
         """
+        if params is None:
+            params = {}
+
         if top is not None:
-            params = {"top": top}
-        else:
-            params = None
+            params["top"] = top
 
         if category is None:
             board = await utils.get_link(self, "leaderboard", params)
