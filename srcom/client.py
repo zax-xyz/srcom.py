@@ -3,7 +3,6 @@ from .dataclasses import Category, Game, Run, Series, User
 
 
 class Client:
-
     def __init__(self):
         self.http = HTTPClient()
 
@@ -56,8 +55,8 @@ class Client:
             List of games matching the search. Could be empty if none
             matched.
         """
-        resp = await self.http.get('games', kwargs)
-        return [Game(game, self.http) for game in resp['data']]
+        resp = await self.http.get("games", kwargs)
+        return [Game(game, self.http) for game in resp["data"]]
 
     async def get_game(self, **kwargs):
         """|coro|
@@ -96,8 +95,8 @@ class Client:
         _bulk: Optional[bool]
             enable bulk access
         """
-        if 'id' in kwargs:
-            return Game.from_id(kwargs['id'], self.http)
+        if "id" in kwargs:
+            return Game.from_id(kwargs["id"], self.http)
 
         games = await self.get_games(**kwargs, max=1)
         return games[0]
@@ -126,8 +125,8 @@ class Client:
         max: Optional[int]
             maximum number of results to return
         """
-        resp = await self.http.get('users', kwargs)
-        return [User(user, self.http) for user in resp['data']]
+        resp = await self.http.get("users", kwargs)
+        return [User(user, self.http) for user in resp["data"]]
 
     async def get_user(self, **kwargs):
         """|coro|
@@ -153,8 +152,8 @@ class Client:
         speedrunslive: Optional[str]
             searches for SpeedRunsLive usernames
         """
-        if 'id' in kwargs:
-            return User.from_id(kwargs['id'], self.http)
+        if "id" in kwargs:
+            return User.from_id(kwargs["id"], self.http)
 
         users = await self.get_users(**kwargs, max=1)
         return users[0]

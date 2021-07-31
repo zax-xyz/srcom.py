@@ -5,15 +5,14 @@ import aiohttp
 
 class HTTPClient:
 
-    BASE = 'https://www.speedrun.com/api/v1/'
+    BASE = "https://www.speedrun.com/api/v1/"
 
     def __init__(self):
-        user_agent = 'srcom.py Python/{}.{}.{} aiohttp/{}'.format(
-            *sys.version_info[:3], aiohttp.__version__,
+        user_agent = "srcom.py Python/{}.{}.{} aiohttp/{}".format(
+            *sys.version_info[:3],
+            aiohttp.__version__,
         )
-        self.session = aiohttp.ClientSession(headers={
-            "User-Agent": user_agent
-        })
+        self.session = aiohttp.ClientSession(headers={"User-Agent": user_agent})
 
     async def _get(self, url, params=None):
         async with self.session.get(url, params=params) as resp:

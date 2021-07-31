@@ -1,5 +1,5 @@
 def get_uri(rel, links):
-    return next(link['uri'] for link in links if link['rel'] == rel)
+    return next(link["uri"] for link in links if link["rel"] == rel)
 
 
 async def get_link(obj, rel, params=None):
@@ -8,7 +8,7 @@ async def get_link(obj, rel, params=None):
 
 
 async def get_data(obj, rel, params=None):
-    return (await get_link(obj, rel, params))['data']
+    return (await get_link(obj, rel, params))["data"]
 
 
 def safeget(dct, keys, default=None):
