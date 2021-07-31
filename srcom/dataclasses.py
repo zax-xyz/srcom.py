@@ -108,10 +108,13 @@ class Game(Resource):
         """Gets the top run in this game.
 
         If category is not specified, then uses the leaderboard's default
-        category
+        category. Can be None if no record was found.
         """
         records = await self.leaderboard(1, category)
-        return next(records)
+        try:
+            return next(records)
+        except StopIteration:
+            return None
 
     async def series(self):
         """Gets the series this game belongs to"""
