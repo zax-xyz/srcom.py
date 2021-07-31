@@ -1,4 +1,4 @@
-from .client import Client
+from . import client as srcom_client
 
 
 class Resource:
@@ -17,7 +17,7 @@ class Resource:
     @classmethod
     async def from_id(cls, id, client=None):
         if client is None:
-            client = Client()
+            client = srcom_client.Client()
 
         resp = await client.http.get(f"{cls.endpoint}/{id}")
         return cls(resp["data"], client.http)
