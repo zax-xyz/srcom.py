@@ -1,3 +1,6 @@
+from .client import Client
+
+
 class Resource:
 
     endpoint = None
@@ -12,6 +15,9 @@ class Resource:
         return self.id == other.id
 
     @classmethod
-    async def from_id(cls, id, http):
-        resp = await http.get(f"{cls.endpoint}/{id}")
-        return cls(resp["data"], http)
+    async def from_id(cls, id, client=None):
+        if client is None:
+            client = Client()
+
+        resp = await client.http.get(f"{cls.endpoint}/{id}")
+        return cls(resp["data"], client.http)
