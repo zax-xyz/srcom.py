@@ -3,3 +3,4 @@ venv
 build
 dist
 srcom.py.egg-info
+.vscode
