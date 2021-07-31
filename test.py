@@ -5,19 +5,23 @@ import srcom
 
 async def print_run(run):
     player = await run.player()
-    print(', '.join((
-        run.time,
-        player.name,
-        player.country or 'NONE',
-        (await run.category()).name,
-        run.link,
-    )))
+    print(
+        ", ".join(
+            (
+                run.time,
+                player.name,
+                player.country or "NONE",
+                (await run.category()).name,
+                run.link,
+            )
+        )
+    )
 
 
 async def main():
     async with srcom.Client() as client:
         game = await client.get_game(name="Kingdom Hearts II")
-        game_by_id = await srcom.Game.from_id(game.id, client.http)
+        game_by_id = await srcom.Game.from_id(game.id, client)
 
         assert type(game.id) == str
         assert game.id == game_by_id.id
