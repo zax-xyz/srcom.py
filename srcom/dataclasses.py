@@ -24,7 +24,8 @@ class Category(Resource):
 
     async def variables(self):
         """Gets the variables for this category"""
-        return await utils.get_link(self, "variables")
+        variables = await utils.get_link(self, "variables")
+        return (Variable(v, self._http) for v in variables["data"])
 
     async def records(self, top=3):
         """Gets the top runs in this category. Defaults to top 3"""
@@ -97,7 +98,8 @@ class Game(Resource):
 
     async def variables(self):
         """Gets all the variables for the current game"""
-        return await utils.get_link(self, "variables")
+        variables = await utils.get_link(self, "variables")
+        return (Variable(v, self._http) for v in variables["data"])
 
     async def records(self, top=3):
         """Gets the top runs in this game. Defaults to top 3"""
@@ -299,3 +301,31 @@ class User(Resource):
         """Gets up to 20 personal bests from the user"""
         runs = await utils.get_data(self, "personal-bests")
         return (Run(r["runs"], self._http, r["place"]) for r in runs)
+
+
+class Variable(Resource):
+
+    endpoint = "variables"
+
+    def __init__(self, data, http):
+        super().__init__(data, http)
+
+        self.name = data["name"]
+        self._category = data["category"]
+        self.type = data["scope"]["type"]
+        self.mandatory = data["mandatory"]
+        self.user_defined = data["user-defined"]
+        self.obsoletes = data["obsoletes"]
+        self.is_subcategory = data["is-subcategory"]
+        self.values = data["values"]["values"]
+        self.default = data["values"]["default"]
+
+    async def game(self):
+        """Gets the game this variable belongs to"""
+        resp = await utils.get_link(self, "game")
+        return Game(resp["data"], self._http)
+
+    async def category(self):
+        """Gets the category this variable belongs to"""
+        resp = await utils.get_link(self, "category")
+        return Category(resp["data"], self._http)
