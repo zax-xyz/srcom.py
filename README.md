@@ -25,6 +25,8 @@ async def main():
     async with srcom.Client() as client:
         # Fuzzy search game by name
         game = await client.get_game(name="Kingdom Hearts II")
+        # You can get any resource directly from its ID as well
+        game = await srcom.Game.from_id(game.id, client)
 
         # Gets the 3 fastest runs for the default category
         for run in await game.leaderboard(3):
