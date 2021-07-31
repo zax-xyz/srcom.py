@@ -75,6 +75,12 @@ class Game(Resource):
         self.romhack = data["romhack"]
         self.gametypes = data["gametypes"]
 
+        self.default_category = next(
+            link["uri"]
+            for link in data["links"]
+            if link["rel"] == "leaderboard"
+        ).split("/")[-1]
+
     async def runs(self):
         """Gets all the runs for the current game"""
         runs = await utils.get_link(self, "runs")
