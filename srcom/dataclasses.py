@@ -38,19 +38,44 @@ class Category(Resource):
             for entry in records
         }
 
+    async def record(self, subcategories=True, params=None):
+        """Gets the top run in this category.
+
+        If subcategories is True, fetches the category variables and uses the
+        defaults for all that are labelled as subcategories. Returned value can
+        be None if no record was found.
+        """
+        if params is None:
+            params = {}
+
+        if subcategories:
+            # Get 'subcategories' defined by variables.
+            variables = await self.variables()
+            subcategories = [var for var in variables if var.is_subcategory]
+            params.update(
+                {f"var-{var.id}": var.default for var in subcategories}
+            )
+
+        records = await self.leaderboard(1, params)
+        try:
+            return next(records)
+        except StopIteration:
+            return None
+
     async def runs(self):
         """Gets all runs in the category"""
         runs = await utils.get_link(self, "runs")
         return (Run(run, self._http) for run in runs["data"])
 
-    async def leaderboard(self, top=None):
+    async def leaderboard(self, top=None, params=None):
         """Gets the leaderboard (all verified current PBs) in this category
 
         If top is not specified, gets all runs in the leaderboard"""
+        if params is None:
+            params = {}
+
         if top is not None:
-            params = {"top": top}
-        else:
-            params = None
+            params["top"] = top
 
         board = await utils.get_link(self, "leaderboard", params)
 
