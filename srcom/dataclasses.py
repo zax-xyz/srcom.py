@@ -50,10 +50,12 @@ class Category(Resource):
 
         if subcategories:
             # Get 'subcategories' defined by variables.
-            variables = await self.variables()
-            subcategories = [var for var in variables if var.is_subcategory]
             params.update(
-                {f"var-{var.id}": var.default for var in subcategories}
+                {
+                    f"var-{var.id}": var.default
+                    for var in await self.variables()
+                    if var.is_subcategory
+                }
             )
 
         records = await self.leaderboard(1, params)
@@ -156,14 +158,12 @@ class Game(Resource):
         if subcategories:
             # Get 'subcategories', the API default only sets the category, not
             # the subcategories defined by variables.
-            variables = await self.variables()
-            subcategories = [
-                var
-                for var in variables
-                if var.is_subcategory and var._category == category
-            ]
             params.update(
-                {f"var-{var.id}": var.default for var in subcategories}
+                {
+                    f"var-{var.id}": var.default
+                    for var in await self.variables()
+                    if var.is_subcategory and var._category == category
+                }
             )
 
         records = await self.leaderboard(1, category, params)
