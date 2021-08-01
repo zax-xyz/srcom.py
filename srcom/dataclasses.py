@@ -112,24 +112,32 @@ class Game(Resource):
             for entry in resp["data"]
         }
 
-    async def record(self, category=None):
+    async def record(self, category=None, subcategories=True, params=None):
         """Gets the top run in this game.
 
         If category is not specified, then uses the leaderboard's default
-        category. Can be None if no record was found.
+        category. If subcategories is True, fetches the category variables and
+        uses the defaults for all that are labelled as subcategories. Returned
+        value can be None if no record was found.
         """
         if category is None:
             category = self.default_category
 
-        # Get 'subcategories', the API default only sets the category, not the
-        # subcategories defined by variables.
-        variables = await self.variables()
-        subcategories = [
-            var
-            for var in variables
-            if var.is_subcategory and var._category == category
-        ]
-        params = {f"var-{var.id}": var.default for var in subcategories}
+        if params is None:
+            params = {}
+
+        if subcategories:
+            # Get 'subcategories', the API default only sets the category, not
+            # the subcategories defined by variables.
+            variables = await self.variables()
+            subcategories = [
+                var
+                for var in variables
+                if var.is_subcategory and var._category == category
+            ]
+            params.update(
+                {f"var-{var.id}": var.default for var in subcategories}
+            )
 
         records = await self.leaderboard(1, category, params)
         try:
