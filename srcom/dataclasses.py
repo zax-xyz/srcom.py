@@ -122,6 +122,8 @@ class Game(Resource):
         """
         if category is None:
             category = self.default_category
+        elif isinstance(category, Category):
+            category = category.id
 
         if params is None:
             params = {}
